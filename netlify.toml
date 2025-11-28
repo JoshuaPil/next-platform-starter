@@ -8,3 +8,5 @@
   port = 5173
   targetPort = 5173
   publish = "dist"
+
+# Trigger rebuild for settings update
