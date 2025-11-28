@@ -1,6 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const RoomKeyScene = ({ roomNumber, guestName, hotelName, directions, onDone }) => {
+  const [isWalletLoading, setIsWalletLoading] = useState(false);
+  const [walletAdded, setWalletAdded] = useState(false);
+
+  const handleAddToWallet = async () => {
+    setIsWalletLoading(true);
+    try {
+      const response = await fetch('/.netlify/functions/wallet-pass', {
+        method: 'POST',
+        body: JSON.stringify({ roomNumber, guestName }),
+      });
+
+      if (response.ok) {
+        setWalletAdded(true);
+        // In a real app, we would trigger the download here
+        // window.location.href = data.passUrl;
+      } else {
+        console.error('Failed to generate pass');
+      }
+    } catch (error) {
+      console.error('Error adding to wallet:', error);
+    } finally {
+      setIsWalletLoading(false);
+    }
+  };
+
   return (
     <div className="room-key-scene">
       <div className="wallet-card">
@@ -33,7 +58,26 @@ const RoomKeyScene = ({ roomNumber, guestName, hotelName, directions, onDone }) 
         </div>
       </div>
 
-      <button className="done-btn" onClick={onDone}>Done</button>
+      <div className="actions-container">
+        {!walletAdded ? (
+          <button
+            className="add-to-wallet-btn"
+            onClick={handleAddToWallet}
+            disabled={isWalletLoading}
+          >
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Add_to_Apple_Wallet_badge.svg"
+              alt="Add to Apple Wallet"
+            />
+          </button>
+        ) : (
+          <div className="wallet-added-msg">
+            <span className="check-icon">✓</span> Added to Wallet
+          </div>
+        )}
+
+        <button className="done-btn" onClick={onDone}>Done</button>
+      </div>
 
       <style>{`
         .room-key-scene {
@@ -158,8 +202,42 @@ const RoomKeyScene = ({ roomNumber, guestName, hotelName, directions, onDone }) 
             backdrop-filter: blur(5px);
         }
 
-        .done-btn {
+        .actions-container {
             margin-top: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .add-to-wallet-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: transform 0.2s;
+        }
+        .add-to-wallet-btn:hover {
+            transform: scale(1.05);
+        }
+        .add-to-wallet-btn img {
+            height: 48px;
+        }
+        .add-to-wallet-btn:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+
+        .wallet-added-msg {
+            color: #4cd964;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            height: 48px;
+        }
+
+        .done-btn {
             padding: 1rem 4rem;
             background-color: white;
             color: var(--cromwell-purple);
