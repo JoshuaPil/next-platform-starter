@@ -1,0 +1,33 @@
+:root {
+  --cromwell-purple: #7A0050; /* Deep purple from the brand */
+  --cromwell-bg: #F9F9F9; /* Light background */
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background-color: var(--cromwell-bg);
+  color: var(--text-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+button {
+  cursor: pointer;
+}
